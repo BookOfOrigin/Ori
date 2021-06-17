@@ -1,0 +1,93 @@
+<?php
+namespace Origin\Autoload {
+
+	use \Origin\Autoload\AutoloadException;
+
+	class Autoload {
+		/*
+		* Static paths to include files (usually files which are not namespaced or have specific namespaces that would not normally load correctly).
+		* Ideally eventually this will be moved to some sort of a config file.
+		* If you have another autoloader file I'd personally suggest putting it on line 8 of incluides/loader.php
+		*/
+		public static $static_paths = array();
+
+		public static $autoload_paths = array(
+			'includes/Library/%s.php',
+			'includes/Library/%s.class.php',
+			'includes/%s.php', 
+			'includes/%s.class.php', 
+			'%s.php',
+			'%s.class.php',
+		);
+		/*
+		*
+		*/
+		public static function Load($class){
+			if(self::StaticPath($class)){
+				return true;
+			}
+
+			$path = explode(constant('NAMESPACE'), $class);
+			return self::LoadClassOrDie(implode(DIRECTORY_SEPARATOR, $path));
+		}
+
+		/*
+		* @params - $class
+		* Attempts to look for a static path match. If found it will load that class.
+		* @return boolean (Successfully loaded a class).
+		*/
+		private static function StaticPath($class){
+			// Direct comparison.
+			if(in_array($class, self::$static_paths)){
+				require_once(self::$static_paths[$class]);
+				return true;
+			}
+
+			// If we're this far in the direct comparison has failed. So we'll look for "off by one".
+			foreach(self::$static_paths as $namespace => $path){
+				if(stripos($namespace, $class) !== false){
+					if(self::Difference((strlen($namespace) - strlen($class)), -1, 1)){
+						require_once(self::$static_paths[$class]);
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/*
+		* @params - $val, $min, $max
+		* Determines if the value is greater than min and less than max.
+		* @return boolean ($val is between $min and $max)
+		*/
+		private static function Difference($val, $min, $max) {
+			return ($val >= $min && $val <= $max);
+		}
+
+		/*
+		* @params - Path to the file without the file's extension.
+		* Attempts to find a file matching the path passed to it based on possible autoload locations ($autoload_paths).
+		* @return boolean (Successfully found and loaded file.)
+		*
+		* NOTE: Will throw AutoloadException if the file does not exist or the path is invalid.
+		*/
+		const GENERIC_ERROR = 'Autoload Failure: Invalid path specified unable to load %s from %s on line %s.';
+		private static function LoadClassOrDie($path){
+			foreach(self::$autoload_paths as $location){
+				if(file_exists(sprintf($location, $path))){
+					require_once(sprintf($location, $path));
+					return true;
+				}
+			}
+			
+			if (!(stripos($path, 'Smarty_Internal_Compile') !== false)) {
+				$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3)[2];
+				$error = sprintf(static::GENERIC_ERROR, $path, $backtrace['file'], $backtrace['line']);
+				throw new AutoloadException($error);
+			}
+		}
+	}
+
+	class AutoloadException extends \Exception {}
+}
