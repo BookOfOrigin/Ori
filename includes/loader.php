@@ -1,5 +1,6 @@
 <?php
 // Required global constants.
+define('NAMESPACE', '\\');
 define('DEBUG', file_exists('hidden/config/sandbox.json'));
 define('DEVELOPMENT', !file_exists('hidden/config/production.json'));
 
