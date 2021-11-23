@@ -20,5 +20,5 @@ abstract class Singleton {
 		}
 		return $instances[$calledClass];
 	}
-    final private function __clone() {}
+    private function __clone() {}
 }
