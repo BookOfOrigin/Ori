@@ -1,7 +1,7 @@
 <?php
 namespace Origin\Utilities;
 
-use \Smarty;
+use \Smarty\Smarty;
 
 class Layout extends \Origin\Utilities\Types\Singleton {
 	private $holder;
