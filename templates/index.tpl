@@ -1,7 +1,6 @@
-{include file='header.tpl'}
-
-<div class="container">
-  <div class="starter-template">
+{extends file="master.tpl"} 
+{block name="main"}
+  <div class="container">
     <h1>Ori Starter Template</h1>
     <p class="lead">
       If you're reaching this page then Ori appears to be setup correctly.<br>
@@ -10,6 +9,4 @@
       At some point I'd like to replace this page with a system that actually tests and finds problems.
     </p>
   </div>
-</div>
-
-{include file='footer.tpl'}
+{/block}
