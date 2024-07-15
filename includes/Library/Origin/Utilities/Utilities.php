@@ -305,7 +305,7 @@ class Utilities {
 	*/
 	public static function SendEmail($email, $subject, $message, array $parameters = array()){
 		try {
-			$mailgun = new Mailgun(Settings::Get()->Value(['origin', 'mailgun_key']), new \Http\Adapter\Guzzle6\Client());
+			$mailgun = new Mailgun(Settings::Get()->Value(['origin', 'mailgun_key']), new \Http\Adapter\Guzzle7\Client());
 			
 			$to = ltrim(sprintf('%s %s <%s>', 
 				isset($parameters['first_name']) ? $parameters['first_name'] : null,
