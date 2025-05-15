@@ -17,7 +17,7 @@ class Layout extends \Origin\Utilities\Types\Singleton {
   * Display a template to a user and exit.
   */
 	public function Display($template){
-		exit($this->Smarty()->display($template));
+		exit($this->Smarty()->display($template) ?? 0);
 	}
 	
   /*
