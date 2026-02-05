@@ -2,5 +2,5 @@
 namespace Origin\Utilities\Bucket;
 
 trait Common {
-	use String, Date, Number, Any, Hash, Boolean, Objects, Float;
+	use Binary, Blob, Date, Number, Any, Hash, Boolean, Objects, Decimal;
 }
